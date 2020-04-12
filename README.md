@@ -16,5 +16,7 @@ This folder contains original partitioned datasets, Train Set (8190 sentences), 
 
 ## Simple Load Using Pickle
 You can directly load all those files by using pickle module avaliable in python.
+
 **import pickle**
+
 **id_embed_train = pickle.load( open( "id_embed_train.p", "rb" ) )**
