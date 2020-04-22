@@ -34,7 +34,11 @@ for x in f:
 		continue
 	s_p = " ".join([t.encode('latin1').decode('utf-8').lower() for t in x.split("\t")[-1].strip().split(" ")])
 	sentence_rr.append(s_p)
-	sentence_id[s_p] = int(x.split("\t")[0])
+	# this is to prevent collisions
+	if s_p in sentence_id.keys():
+		sentence_id[s_p].append(int(x.split("\t")[0]))
+	else:
+		sentence_id[s_p] = [int(x.split("\t")[0])]
 print("Finish loading sentences ...")
 # Load phrase mapping
 phrase = dict()
@@ -60,13 +64,23 @@ for x in f:
 sentence_rate = dict()
 count = 0
 miss_count = 0
+
+# have a separate count matrics to avoid collisions
+sentence_count = dict()
+for seq in sentence_rr:
+	sentence_count[seq] = 0
+
 for seq in sentence_rr:
 	if seq not in phrase.keys():
-		miss_count += 1
+		# it menas it contain tokenized parenthese
+		seq_l = re.sub("-lrb-", "(", seq)
+		seq_lr = re.sub("-rrb-", ")", seq_l)
+		sentence_rate[sentence_id[seq][0]] = phrase_rate[phrase[seq_lr]] # no collision
+		if seq_lr not in phrase.keys():
+			assert(False)
 	else:
-		sentence_rate[sentence_id[seq]] = phrase_rate[phrase[seq]]
-	count += 1
-
+		sentence_rate[sentence_id[seq][sentence_count[seq]]] = phrase_rate[phrase[seq]]
+		sentence_count[seq] = sentence_count[seq] + 1
 
 #################
 #
@@ -90,9 +104,9 @@ for x in f:
 	if p == 1:
 		partition['Train'].append(fi)
 	elif p == 2:
-		partition['Valid'].append(fi)
-	elif p == 3:
 		partition['Test'].append(fi)
+	elif p == 3:
+		partition['Valid'].append(fi)
 print("Finish loading partition ...")
 
 
@@ -189,17 +203,5 @@ for sss in test_final:
 	test_rr[sss] = sentence_rate[sss]
 pickle.dump( test_embed, open("id_embed_test.p", "wb") )
 pickle.dump( test_rr, open("id_rating_test.p", "wb") )
-
-
-	# write into a file
-	# output_file = "./features-UNPARTITION/linguistic/"+ str(seq) + ".csv"
-	# with open(output_file, mode='w') as csv_file:
-	# 	file_writer = csv.writer(csv_file, delimiter='\t')
-	# 	file_writer.writerow(header)
-	# 	for pair in token_vec.keys():
-	# 		row = [pair]
-	# 		for d in token_vec[pair]:
-	# 			row.append(d)
-	# 		file_writer.writerow(row)
 
 
