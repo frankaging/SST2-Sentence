@@ -4,7 +4,7 @@ This folder contains raw SST-2 data as well as our parsed script. And we also pr
 
 ## Data Partition
 
-This folder contains original partitioned datasets, Train Set (8190 sentences), Valid Set (2131 sentences) and Test Set. Each sentence will have labels indicating its valence rating. Note that you can recover the 5 classes by mapping the positivity probability using the following cut-offs: [0, 0.2], (0.2, 0.4], (0.4, 0.6], (0.6, 0.8], (0.8, 1.0]. You can change it to binary label as well by ignoring the neutral sentences.
+This folder contains original partitioned datasets, Train Set (8190 sentences), Valid Set (1101 Sentences) and Test Set (2131 sentences). Each sentence will have labels indicating its valence rating. Note that you can recover the 5 classes by mapping the positivity probability using the following cut-offs: [0, 0.2], (0.2, 0.4], (0.4, 0.6], (0.6, 0.8], (0.8, 1.0]. You can change it to binary label as well by ignoring the neutral sentences.
 
 ## Format of Each File
 
